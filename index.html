@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>My Links</title>
+
+<style>
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e293b, #020617);
+    color: white;
+    margin: 0;
+    padding: 12px;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* SEARCH */
+.search {
+    width: 94%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 15px;
+    background: #1e293b;
+    color: white;
+}
+
+/* CARD */
+.card {
+    background: #1e293b;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.card:hover {
+    background: #4f46e5;
+}
+
+/* TEXT */
+.title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.link {
+    font-size: 12px;
+    color: #94a3b8;
+    word-break: break-all;
+}
+
+/* BACKDROP */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    display: none;
+    z-index: 100;
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 100%);
+    width: 85%;
+    max-width: 500px;
+    background: linear-gradient(180deg, #1e293b, #020617);
+    border-radius: 20px 20px 0 0;
+    padding: 18px;
+    transition: 0.35s ease;
+    z-index: 101;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+}
+
+.popup.active {
+    transform: translate(-50%, 0);
+}
+
+.backdrop.active {
+    display: block;
+}
+
+/* HEADER */
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.popup-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* CLOSE */
+.close-btn {
+    font-size: 20px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+/* BUTTONS */
+.popup button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.open {
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    font-weight: 900;
+}
+
+.copy {
+    background: #4b71e1;
+    color: white;
+    font-weight: 900;
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #22c55e;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: none;
+    z-index: 200;
+}
+
+/* MOBILE IMPROVEMENTS */
+@media (max-width: 480px) {
+    .title {
+        font-size: 14px;
+    }
+
+    .link {
+        font-size: 11px;
+    }
+
+    .popup {
+        padding: 16px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <input type="text" id="search" class="search" placeholder="Search links..." />
+    <div id="list"></div>
+</div>
+
+<!-- BACKDROP -->
+<div id="backdrop" class="backdrop" onclick="closePopup()"></div>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+
+    <div class="popup-header">
+        <div id="popupTitle" class="popup-title"></div>
+        <div class="close-btn" onclick="closePopup()">✕</div>
+    </div>
+
+    <button class="open" onclick="openLink()">Open Link</button>
+    <button class="copy" onclick="copyLink()">Copy Link</button>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">Link Copied!</div>
+
+<script>
+
+let links = [];
+let selectedLink = "";
+
+/* LOAD JSON */
+async function loadLinks() {
+    const res = await fetch('links.json');
+    links = await res.json();
+    render(links);
+}
+
+/* RENDER */
+function render(data) {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    data.forEach(link => {
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.onclick = () => showPopup(link);
+
+        div.innerHTML = `
+            <div class="title">${link.name}</div>
+            <div class="link">${link.url}</div>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+/* POPUP */
+function showPopup(link) {
+    selectedLink = link.url;
+
+    document.getElementById("popupTitle").innerText = link.name;
+
+    document.getElementById("popup").classList.add("active");
+    document.getElementById("backdrop").classList.add("active");
+}
+
+function closePopup() {
+    document.getElementById("popup").classList.remove("active");
+    document.getElementById("backdrop").classList.remove("active");
+}
+
+/* ACTIONS */
+function openLink() {
+    window.open(selectedLink, "_blank");
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(selectedLink);
+
+    const toast = document.getElementById("toast");
+    toast.style.display = "block";
+
+    setTimeout(() => toast.style.display = "none", 2000);
+}
+
+/* SEARCH */
+document.getElementById("search").addEventListener("input", function () {
+    const val = this.value.toLowerCase();
+
+    const filtered = links.filter(l =>
+        l.name.toLowerCase().includes(val) ||
+        l.url.toLowerCase().includes(val)
+    );
+
+    render(filtered);
+});
+
+/* INIT */
+loadLinks();
+
+</script>
+
+</body>
+</html>
