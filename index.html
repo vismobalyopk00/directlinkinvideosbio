@@ -454,6 +454,7 @@ async function loadLinks() {
     const res = await fetch('links.json');
     if (!res.ok) throw new Error();
     links = await res.json();
+    links.reverse();
     render(links);
   } catch {
     document.getElementById("list").innerHTML =
