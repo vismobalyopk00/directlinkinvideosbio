@@ -2,12 +2,12 @@
   {
     "name": "Party Video",
     "url": "https://vkvideo.ru/video-212396640_456245462",
-    "image": "https://github.com/vismobalyopk00/directlinkinvideosbio/blob/main/images/party.jpg"
+    "image": "https://raw.githubusercontent.com/vismobalyopk00/directlinkinvideosbio/refs/heads/main/images/party.jpg"
   },
   {
     "name": "Party Video",
     "url": "https://1024terabox.com/s/1LioroTTMzwXpleGKxTehAQ",
-    "image": "https://github.com/vismobalyopk00/directlinkinvideosbio/blob/main/images/party.jpg"
+    "image": "https://raw.githubusercontent.com/vismobalyopk00/directlinkinvideosbio/refs/heads/main/images/party.jpg"
   },
   {
     "name": "0001",
@@ -82,6 +82,6 @@
   {
     "name": "0016",
     "url": "https://1024terabox.com/s/1G-O-tjgIR0Qiwca5NOO3hw",
-    "image": "/images/party.jpg"
+    "image": "images/party.jpg"
   }
 ]
