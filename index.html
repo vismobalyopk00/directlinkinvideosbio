@@ -444,6 +444,8 @@ body {
 let links = [];
 let selectedLink = "";
 const DEFAULT_IMG = "https://thumbs.dreamstime.com/b/web-324671543.jpg";
+const DEFAULT_IMG_REEL = "IMAGES/DEFAULT.jpg";
+
 
 function getDomain(url) {
   try { return new URL(url).hostname; } catch { return url; }
@@ -485,9 +487,9 @@ function render(data) {
     thumb.className = "card-thumb";
 
     const img = document.createElement("img");
-    img.src = link.image || DEFAULT_IMG;
+    img.src = link.image || DEFAULT_IMG_REEL;
     img.alt = link.name;
-    img.onerror = () => { img.src = DEFAULT_IMG; };
+    img.onerror = () => { img.src = DEFAULT_IMG_REEL; };
 
     thumb.appendChild(img);
 
